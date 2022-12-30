@@ -68,6 +68,7 @@
         <project.build.outputTimestamp>2022-11-10T07:37:14Z</project.build.outputTimestamp>
         <junit.version>4.13.2</junit.version>
         <junit5.version>5.9.1</junit5.version>
+        <maven.it.extension.version>0.11.0</maven.it.extension.version>
     </properties>
 
     <scm>
@@ -193,6 +194,18 @@
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-jupiter-extension</artifactId>
+            <version>${maven.it.extension.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+             <groupId>com.soebes.itf.jupiter.extension</groupId>
+             <artifactId>itf-assertj</artifactId>
+             <version>${maven.it.extension.version}</version>
+             <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -330,6 +343,42 @@
                     </fileSets>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>com.soebes.itf.jupiter.extension</groupId>
+              <artifactId>itf-maven-plugin</artifactId>
+              <version>${maven.it.extension.version}</version>
+              <executions>
+                <execution>
+                  <id>installing</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                    <goal>install</goal>
+                    <goal>resources-its</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                  <!--
+                   ! currently needed to run integration tests.
+                  -->
+                  <systemProperties>
+                    <maven.version>${maven.version}</maven.version>
+                    <maven.home>${maven.home}</maven.home>
+                  </systemProperties>
+                </configuration>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>integration-test</goal>
+                      <goal>verify</goal>
+                    </goals>
+                  </execution>
+                </executions>
+          </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -342,6 +391,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.0.0-M7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.22.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
